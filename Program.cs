@@ -50,6 +50,34 @@ app.MapPost("/usuarios", (CriarUsuario criarUsuario) =>
     return $"Usuário {usuario.Nome} criado com sucesso";
 });
 
+app.MapPut("/usuarios/{id}", (int id, CriarUsuario criarUsuario) =>
+{
+    var usuario = usuarios.FirstOrDefault(u => u.Id == id);
+    if (usuario == null){
+        return Results.NotFound();
+    }
+
+    var index = usuarios.FindIndex(u => u.Id == id);
+
+    var usuarioAtualizado = new Usuario(usuario.Id, criarUsuario.Nome);
+
+    usuarios[index] = usuarioAtualizado;
+
+    return Results.Ok("Usuário atualizado com sucesso.");
+});
+
+app.MapDelete("/usuarios/{id}", (int id) =>
+{
+    var usuario = usuarios.FirstOrDefault(u => u.Id == id);
+    if (usuario == null){
+        return Results.NotFound();
+    }
+
+    usuarios.Remove(usuario);
+    return Results.Ok("Usuário removido com sucesso.");
+});
+
+
 app.Run();
 
 record Usuario(int Id, string Nome);
