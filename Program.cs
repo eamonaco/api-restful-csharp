@@ -19,23 +19,28 @@ var summaries = new[]
     "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
 };
 
-app.MapGet("/weatherforecast", () =>
+
+
+var usuarios = new List<Usuario>();
+
+app.MapGet("/usuarios", () => 
 {
-    var forecast =  Enumerable.Range(1, 5).Select(index =>
-        new WeatherForecast
-        (
-            DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-            Random.Shared.Next(-20, 55),
-            summaries[Random.Shared.Next(summaries.Length)]
-        ))
-        .ToArray();
-    return forecast;
-})
-.WithName("GetWeatherForecast");
+    return usuarios;
+
+});
+
+app.MapGet("/usuarios/{id}", (int id) =>
+{
+    return "Usuário " + id;
+});
+
+app.MapPost("/usuarios", (Usuario usuario) => 
+{
+    usuarios.Add(usuario);
+    return $"Usuário {usuario.Nome} criado com sucesso";
+});
 
 app.Run();
 
-record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
+record Usuario(string Nome);
+
