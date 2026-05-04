@@ -31,16 +31,30 @@ app.MapGet("/usuarios", () =>
 
 app.MapGet("/usuarios/{id}", (int id) =>
 {
-    return "Usuário " + id;
+    var usuario = usuarios.FirstOrDefault(u => u.Id == id);
+    
+    if (usuario == null){
+        return Results.NotFound();
+        
+    }
+    return Results.Ok(usuario);
 });
 
-app.MapPost("/usuarios", (Usuario usuario) => 
-{
+app.MapPost("/usuarios", (CriarUsuario criarUsuario) => 
+{   
+    var id = usuarios.Count + 1;
+    
+    var usuario = new Usuario(id, criarUsuario.Nome);
+    
     usuarios.Add(usuario);
     return $"Usuário {usuario.Nome} criado com sucesso";
 });
 
 app.Run();
 
-record Usuario(string Nome);
+record Usuario(int Id, string Nome);
+
+record CriarUsuario(string Nome);
+
+
 
